@@ -8,7 +8,7 @@ source "http://rubygems.org"
 group :development do
 #  gem "shoulda", ">= 0"
   gem "bundler", "~> 1"
-  gem "jeweler", "~> 1.6.4"
+  gem "jeweler", "~> 2"
   gem "rspec"
   gem "rdoc"
 #  gem "rcov", ">= 0"
