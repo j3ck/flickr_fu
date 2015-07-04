@@ -12,10 +12,11 @@
   You need to first get an API key as detailed here:
 
   http://www.flickr.com/services/api/misc.api_keys.html
-  
-## Installation
 
-  <code>sudo gem install flickr_fu</code>
+## Installation
+```bash
+sudo gem install flickr_fu
+```
 
 ## Documentation
 
@@ -23,77 +24,79 @@
   http://rubydoc.info/gems/flickr_fu/
 
 ### Example flickr.yml
-<pre>
+```ruby
 --- !map:HashWithIndifferentAccess
 key: "YOUR KEY"
 secret: "YOUR SECRET"
 token_cache: "token_cache.yml"
-</pre>
+```
 
 ### Authorization
 
 To authorise your application to access Flickr using your API key you will need to access a specific URL.
-  
+
 To generate this URL run the following and when presented with the URL access it from your browser. Confirm the application has permission at the level you have specified.
-  
+
 Note that flickr has different types of keys. If you use one for a webapplication, which is most likely, you need to define a callback and somehow make sure that you connect the parameter :frob that flickr send via the callback is assigned  to the right user account. The best way to do this is to loop over all the current user's flickr accounts and try flickr.auth.token with the :frob.
-  
+
 Finally, cache the token (this will create the token cache file)
-  
+
 If you have an invalid API key you will see errors such as:
-  
-<code>"100: Invalid API Key"</code>
-  
+
+`"100: Invalid API Key"`
+
 If you don't follow the process below to authorise your application you will see errors such as:
-  
-<pre>
-"98: Login failed / Invalid auth token" or 
+
+```ruby
+"98: Login failed / Invalid auth token" or
 "99: User not logged in / Insufficient permissions"
-</pre>
-  
+```
+
 ### Authorization Example for non-webapplication
 
-<pre>
+```ruby
 require 'flickr_fu'
- 
+
 flickr = Flickr.new('flickr.yml')
-  
+
 puts "visit the following url, then click <enter> once you have authorized:"
 
  # request write permissions
 puts flickr.auth.url(:write)
-  
+
 gets
-  
+
 flickr.auth.cache_token
-</pre>
+```
 
 ### Authorization Example for a webapplication
 
 flickr.auth.token also contains the nsid and username, this example only stores the token and no other userdata.
 
-<pre>
+```ruby
 require 'flickr_fu'
   class FlickrController < ActionController::Base
     def create
       flickr = Flickr.new('flickr.yml')
       redirect_to flickr.auth.url(:write)
     end
+
     def flickr_callback
       flickr = Flickr.new('flickr.yml')
       flickr.auth.frob = params[:frob]
       current_user.update_attribute :flickr_token, flickr.auth.token.token
     end
+
     def something_else_with_flickr
       flickr = Flickr.new(YAML.load_file('flickr.yml').merge(:token => current_user.flickr_token))
       # now you have full access on the user's data :)
     end
 end
-</pre>
+```
 
 ### Search Example
 
-<pre>
+```ruby
 require 'flickr_fu'
 
 flickr = Flickr.new('flickr.yml')
@@ -104,35 +107,42 @@ puts "found #{photos.size} photo(s)"
 
 photos.each do |photo|
     puts photo.title
+
     puts photo.description unless [nil, ''].include?(photo.description)
     [:square, :thumbnail, :small, :medium, :large, :original].each do |size|
       puts "#{size}: #{photo.url(size)}"
     end
+
     puts "comments: #{photo.comments.size}"
+
     photo.comments.each do |comment|
       intro = "#{comment.author_name} says - "
       puts "#{intro}\"#{comment.comment.gsub("\n", "\n"+(" "*intro.length))}\""
     end
+
     puts "notes: #{photo.notes.size}"
+
     photo.notes.each do |note|
       puts "[#{note.x},#{note.y} ~ #{note.width}x#{note.height}] - \"#{note.note}\""
     end
     puts
     puts
   end
-</pre>
-  
+```
+
 ### Another Search Example
 
-If searching for photos by user id then you need to specify the 'alias' - without intervention this is usually set by Flickr and is an alphanumeric string. 
-  
+If searching for photos by user id then you need to specify the 'alias' - without intervention this is usually set by Flickr and is an alphanumeric string.
+
 To find out the user id for a given user, you can use the tool at:
 
 http://idgettr.com/
 
 And replace the line in the above sample to query on user id:
-  
-<code>photos = flickr.photos.search(:user_id => 'your_user_id_here')</code>
+
+```ruby
+photos = flickr.photos.search(:user_id => 'your_user_id_here')
+```
 
 ## Patch Contributers
 
