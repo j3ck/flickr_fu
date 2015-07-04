@@ -3,7 +3,7 @@
 ## Contact
 
   Author: Ben Wyrosdick
-  Email: ben [at] commonthread.com
+  Email: ben [dot] wyrosdick [at] gmail [dot] com
   Issue tracker: https://github.com/commonthread/flickr_fu/issues
   Code Repository: http://github.com/commonthread/flickr_fu/tree/master
 
@@ -154,3 +154,6 @@ photos = flickr.photos.search(:user_id => 'your_user_id_here')
 - Thomas R. Koll
 - P. Mark Anderson
 - Josh Nichols
+
+## License
+Code is offered under the MIT license.
