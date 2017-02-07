@@ -48,6 +48,11 @@ describe Flickr::Photos::Photo do
       @flickr.stub!(:request_over_http).and_return(exif_txt)
     end
 
+    it "#exif should turn exif_added in true" do
+      @photo.exif
+      @photo.exif_added.should == true
+    end
+
     it "should fill camera attr" do
       @photo.camera.should == "Canon EOS REBEL T3i"
     end
