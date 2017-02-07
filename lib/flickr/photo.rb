@@ -334,7 +334,7 @@ class Flickr::Photos::Photo
         self.exif_added = true
         self.camera = rsp['photo']['camera']
         self.exif = rsp['photo']['exif'].map do |tag|
-          { 
+          {
             label: tag['label'],
             content: tag['clean'] ? tag['clean']['_content'] : tag['raw']['_content']
           }
