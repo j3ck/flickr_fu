@@ -223,6 +223,11 @@ class Flickr::Photos::Photo
     @exif
   end
 
+  def camera
+    attach_exif
+    @camera
+  end
+
   def description # :nodoc:
     attach_info
     @description
