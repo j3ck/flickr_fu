@@ -41,6 +41,52 @@ describe Flickr::Photos::Photo do
     end
   end
 
+  describe ".exif" do
+
+    before :each do
+      exif_txt = File.read(File.dirname(__FILE__) + "/../fixtures/flickr/photos/get_exif.json")
+      @flickr.stub!(:request_over_http).and_return(exif_txt)
+    end
+
+    it "#exif should turn exif_added in true" do
+      @photo.exif
+      @photo.exif_added.should == true
+    end
+
+    it "should fill camera attr" do
+      @photo.camera.should == "Canon EOS REBEL T3i"
+    end
+
+    it "should fill exif attr" do
+      @photo.exif.should_not be_empty
+    end
+
+    it "should be an array" do
+      @photo.exif.class.should == Array
+    end
+
+    it "elements should be hash" do
+      @photo.exif.first.class.should == Hash
+    end
+
+    it "should have right keys" do
+      @photo.exif.first.keys.should == [:label, :content]
+    end
+
+    it "should fill element label" do
+      @photo.exif.first[:label].should == "JFIFVersion"
+    end
+
+    it "should fill element content" do
+      @photo.exif.first[:content].should == "1.01"
+    end
+
+    it "should prefer clean instead of _content" do
+      @photo.exif.first(4).last[:content].should_not == "72"
+      @photo.exif.first(4).last[:content].should == "72 dpi"
+    end
+  end
+
   describe ".photo_size" do
 
     before :each do

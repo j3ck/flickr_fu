@@ -4,6 +4,7 @@ class Flickr::Photos::Photo
   attr_accessor :license_id, :uploaded_at, :taken_at, :owner_name, :icon_server, :original_format, :updated_at, :geo, :tags, :machine_tags, :o_dims, :views, :media # extra attributes
   attr_accessor :info_added, :description, :original_secret, :owner_username, :owner_realname, :url_photopage, :notes # info attributes
   attr_accessor :comments # comment attributes
+  attr_accessor :exif_added, :exif, :camera # exif
   
   # create a new instance of a flickr photo.
   # 
@@ -217,6 +218,16 @@ class Flickr::Photos::Photo
     true
   end
   
+  def exif
+    attach_exif
+    @exif
+  end
+
+  def camera
+    attach_exif
+    @camera
+  end
+
   def description # :nodoc:
     attach_info
     @description
@@ -311,6 +322,24 @@ class Flickr::Photos::Photo
     when :large then 'b'
     when :original then 'o'
     else ''
+    end
+  end
+
+  def attach_exif
+    unless self.exif_added
+      rsp = @flickr.send_request('flickr.photos.getExif', :format => 'json', :photo_id => self.id,
+                                 :secret => self.secret, :nojsoncallback => 1)
+
+      if rsp['photo']
+        self.exif_added = true
+        self.camera = rsp['photo']['camera']
+        self.exif = rsp['photo']['exif'].map do |tag|
+          {
+            label: tag['label'],
+            content: tag['clean'] ? tag['clean']['_content'] : tag['raw']['_content']
+          }
+        end
+      end
     end
   end
 

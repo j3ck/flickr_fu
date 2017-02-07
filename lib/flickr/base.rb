@@ -88,12 +88,16 @@ module Flickr
       rsp = request_over_http(options, http_method, endpoint)
       
       rsp = '<rsp stat="ok"></rsp>' if rsp == ""
-      xm = XmlMagic.new(rsp)
-      
-      if xm[:stat] == 'ok'
-        xm
+      if options[:format] && options[:format] == 'json'
+        return JSON.parse rsp
       else
-        raise Flickr::Errors.error_for(xm.err[:code].to_i, xm.err[:msg])
+        xm = XmlMagic.new(rsp)
+
+        if xm[:stat] == 'ok'
+          return xm
+        else
+          raise Flickr::Errors.error_for(xm.err[:code].to_i, xm.err[:msg])
+        end
       end
     end
     
