@@ -322,7 +322,8 @@ class Flickr::Photos::Photo
 
   def attach_exif
     unless self.exif_added
-      rsp = @flickr.send_request('flickr.photos.getExif', :format => 'json', :photo_id => self.id, :secret => self.secret)
+      rsp = @flickr.send_request('flickr.photos.getExif', :format => 'json', :photo_id => self.id,
+                                 :secret => self.secret, :nojsoncallback => 1)
 
       if rsp['photo']
         self.exif_added = true

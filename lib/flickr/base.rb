@@ -89,7 +89,7 @@ module Flickr
       
       rsp = '<rsp stat="ok"></rsp>' if rsp == ""
       if options[:format] && options[:format] == 'json'
-        return JSON.parse rsp[14..-2]
+        return JSON.parse rsp
       else
         xm = XmlMagic.new(rsp)
 
